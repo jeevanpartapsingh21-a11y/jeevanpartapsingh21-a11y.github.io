@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeevan Partap Singh — Computer Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFFBF3;
+    --bg-panel: #FFFFFF;
+    --ink: #182231;
+    --ink-soft: #5B6472;
+    --green: #16A34A;
+    --green-dark: #0F7A38;
+    --red: #FF4757;
+    --yellow: #FFC93C;
+    --blue: #3D8BFF;
+    --purple: #9B5DE5;
+    --line: #E7E1D4;
+    --radius: 16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit;}
+  ::selection{background:var(--yellow); color:var(--ink);}
+
+  /* ---------- utility ---------- */
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px; border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 4px rgba(22,163,74,0.15);
+  }
+  section{padding:96px 0;}
+  @media (max-width:640px){ section{padding:64px 0;} }
+
+  /* ---------- breadboard rail divider ---------- */
+  .rail{
+    height:34px;
+    background-image: radial-gradient(circle, var(--line) 2.2px, transparent 2.2px);
+    background-size: 22px 22px;
+    background-position: 11px center;
+    position:relative;
+    opacity:0.9;
+  }
+  .rail::before, .rail::after{
+    content:""; position:absolute; left:0; right:0; height:2px;
+  }
+  .rail::before{ top:8px; background:linear-gradient(90deg, transparent, var(--red) 8%, var(--red) 92%, transparent); opacity:.35;}
+  .rail::after{ bottom:8px; background:linear-gradient(90deg, transparent, var(--blue) 8%, var(--blue) 92%, transparent); opacity:.35;}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,251,243,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:16px; padding-bottom:16px;
+  }
+  .logo{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:17px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .led{
+    width:9px; height:9px; border-radius:50%; background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    animation: blink 2.6s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  nav ul{list-style:none; display:flex; gap:28px;}
+  nav a{
+    font-size:14px; font-weight:500; text-decoration:none; color:var(--ink-soft);
+    transition:color .15s ease;
+  }
+  nav a:hover{color:var(--green-dark);}
+  .nav-toggle{display:none;}
+  @media (max-width:720px){
+    nav ul{display:none;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:88px 0 60px;}
+  .hero .wrap{display:grid; grid-template-columns:1.3fr 1fr; gap:48px; align-items:center;}
+  @media (max-width:820px){ .hero .wrap{grid-template-columns:1fr;} }
+  .hero h1{
+    font-size:clamp(36px, 5.4vw, 60px);
+    line-height:1.04;
+    margin-bottom:20px;
+  }
+  .hero h1 .hl{
+    background:linear-gradient(180deg, transparent 62%, rgba(255,201,60,0.55) 62%);
+  }
+  .hero p.lead{
+    font-size:18px; color:var(--ink-soft); max-width:46ch; margin-bottom:30px;
+  }
+  .btn-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14.5px;
+    padding:13px 22px; border-radius:100px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    border:1.5px solid transparent;
+  }
+  .btn-primary{background:var(--ink); color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(24,34,49,0.25);}
+  .btn-ghost{border-color:var(--ink); color:var(--ink);}
+  .btn-ghost:hover{transform:translateY(-2px); background:var(--ink); color:#fff;}
+
+  /* circuit card in hero */
+  .chip-card{
+    background:var(--bg-panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px;
+    position:relative;
+    box-shadow:0 20px 40px -20px rgba(24,34,49,0.18);
+  }
+  .chip-card .pins{
+    position:absolute; top:-1px; left:24px; right:24px; height:8px;
+    display:flex; justify-content:space-between;
+  }
+  .chip-card .pins span{width:3px; height:8px; background:var(--line);}
+  .chip-card .row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0; border-bottom:1px dashed var(--line);
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .chip-card .row:last-child{border-bottom:none;}
+  .chip-card .row .val{color:var(--green-dark); font-weight:600;}
+  .dot{width:7px; height:7px; border-radius:50%; display:inline-block; margin-right:7px;}
+
+  /* ---------- section headers ---------- */
+  .sec-head{margin-bottom:44px; max-width:60ch;}
+  .sec-head h2{font-size:clamp(26px,3.4vw,36px); margin-bottom:12px;}
+  .sec-head p{color:var(--ink-soft); font-size:16px;}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid; grid-template-columns:1.2fr 1fr; gap:50px; align-items:start;}
+  @media (max-width:780px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid p{margin-bottom:16px; font-size:16px; color:var(--ink-soft);}
+  .fact-list{list-style:none; display:flex; flex-direction:column; gap:14px;}
+  .fact-list li{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; font-size:14px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .fact-list .tag{
+    font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;
+    color:#fff; background:var(--green); padding:3px 8px; border-radius:6px; flex-shrink:0; margin-top:2px;
+  }
+
+  /* ---------- skills ---------- */
+  .skill-groups{display:grid; grid-template-columns:repeat(2, 1fr); gap:20px;}
+  @media (max-width:680px){ .skill-groups{grid-template-columns:1fr;} }
+  .skill-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px;
+  }
+  .skill-card h4{
+    font-size:12.5px; text-transform:uppercase; letter-spacing:.07em;
+    color:var(--ink-soft); margin-bottom:14px; font-family:'JetBrains Mono', monospace;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    padding:6px 11px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg);
+  }
+  .skill-card:nth-child(1) .chip{border-color:rgba(255,71,87,0.35);}
+  .skill-card:nth-child(2) .chip{border-color:rgba(61,139,255,0.35);}
+  .skill-card:nth-child(3) .chip{border-color:rgba(155,93,229,0.35);}
+  .skill-card:nth-child(4) .chip{border-color:rgba(255,201,60,0.5);}
+
+  /* ---------- projects ---------- */
+  .proj-list{display:flex; flex-direction:column; gap:22px;}
+  .proj-card{
+    background:var(--bg-panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 30px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:22px;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .proj-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 34px -18px rgba(24,34,49,0.28);
+    border-color:var(--proj-color, var(--green));
+  }
+  .proj-led{
+    width:14px; height:14px; border-radius:50%;
+    background:var(--proj-color, var(--green));
+    margin-top:6px;
+    box-shadow:0 0 0 5px color-mix(in srgb, var(--proj-color, var(--green)) 16%, transparent);
+    transition:box-shadow .18s ease;
+  }
+  .proj-card:hover .proj-led{
+    box-shadow:0 0 0 5px color-mix(in srgb, var(--proj-color, var(--green)) 16%, transparent), 0 0 16px var(--proj-color, var(--green));
+  }
+  @media (max-width:640px){ .proj-card{grid-template-columns:1fr; padding:22px;} .proj-led{display:none;} }
+  .proj-top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:8px;}
+  .proj-card h3{font-size:19px;}
+  .proj-status{
+    font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--proj-color, var(--green)); white-space:nowrap;
+  }
+  .proj-card p.desc{color:var(--ink-soft); font-size:14.5px; margin-bottom:14px;}
+  .proj-stack{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;}
+  .proj-stack span{
+    font-family:'JetBrains Mono', monospace; font-size:11.5px;
+    background:var(--bg); border:1px solid var(--line); border-radius:7px; padding:4px 9px;
+  }
+  .proj-link{
+    font-size:13.5px; font-weight:600; text-decoration:none; color:var(--ink);
+    display:inline-flex; align-items:center; gap:5px;
+    border-bottom:1.5px solid var(--proj-color, var(--green));
+  }
+
+  /* ---------- experience ---------- */
+  .exp-list{display:flex; flex-direction:column;}
+  .exp-item{
+    display:grid; grid-template-columns:180px 1fr; gap:24px;
+    padding:26px 0; border-top:1px solid var(--line);
+  }
+  .exp-item:last-child{border-bottom:1px solid var(--line);}
+  @media (max-width:600px){ .exp-item{grid-template-columns:1fr; gap:6px;} }
+  .exp-item .period{font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--ink-soft);}
+  .exp-item h4{font-size:16.5px; margin-bottom:8px;}
+  .exp-item ul{padding-left:18px; color:var(--ink-soft); font-size:14.5px; display:flex; flex-direction:column; gap:5px;}
+
+  /* ---------- honors ---------- */
+  .honors{display:flex; flex-direction:column; gap:12px;}
+  .honor{
+    display:flex; align-items:center; gap:12px;
+    font-size:14.5px; padding:12px 0; border-bottom:1px dashed var(--line);
+  }
+  .honor:last-child{border-bottom:none;}
+  .honor .spark{color:var(--yellow); font-size:16px;}
+
+  /* ---------- connect ---------- */
+  #connect{padding-bottom:60px;}
+  .connect-row{display:flex; flex-wrap:wrap; gap:14px; margin-top:8px;}
+  .connect-btn{
+    display:flex; align-items:center; gap:12px;
+    background:var(--bg-panel); border:1.5px solid var(--line); border-radius:14px;
+    padding:16px 22px; text-decoration:none; color:var(--ink);
+    font-family:'JetBrains Mono', monospace; font-size:14px; font-weight:500;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .connect-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 28px -16px rgba(24,34,49,0.3);
+    border-color:var(--icon-color, var(--green));
+  }
+  .connect-btn .icon-dot{
+    width:34px; height:34px; border-radius:10px;
+    background:color-mix(in srgb, var(--icon-color, var(--green)) 14%, transparent);
+    color:var(--icon-color, var(--green));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .connect-btn .icon-dot svg{width:17px; height:17px;}
+  .connect-btn .label{display:flex; flex-direction:column; gap:2px;}
+  .connect-btn .label .small{font-family:'Inter', sans-serif; font-size:11px; color:var(--ink-soft); font-weight:400;}
+
+  /* ---------- footer ---------- */
+  footer{padding:36px 0; border-top:1px solid var(--line);}
+  .foot-bottom{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><span class="led"></span> Jeevan Partap Singh</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <h1>I build things that <span class="hl">sense</span>, <span class="hl">signal</span>, and <span class="hl">respond</span>.</h1>
+      <p class="lead">Incoming Computer Engineering student at the University of Waterloo, focused on embedded systems and hardware interfacing. I build sensor-driven systems — motion detection, telemetry, and signal processing — from circuit to code.</p>
+      <div class="btn-row">
+        <a href="#projects" class="btn btn-primary">View projects →</a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+    </div>
+    <div class="chip-card">
+      <div class="pins">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="row"><span>role</span><span class="val">comp eng '30</span></div>
+      <div class="row"><span>focus</span><span class="val">embedded systems</span></div>
+      <div class="row"><span>languages</span><span class="val">C++ · Python · Java</span></div>
+      <div class="row"><span><span class="dot" style="background:var(--red)"></span>sensor</span><span class="val">PIR / HC-SR04</span></div>
+      <div class="row"><span><span class="dot" style="background:var(--blue)"></span>protocol</span><span class="val">I²C · UART · MQTT</span></div>
+      <div class="row"><span>status</span><span class="val" style="color:var(--green-dark)">seeking W27 co-op</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="rail"></div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">about</div>
+      <h2>From breadboards to biology datasets</h2>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p>I'm entering the 1A term of the Computer Engineering (BASc) program at the University of Waterloo this fall. My work focuses on embedded systems: interfacing sensors with microcontrollers and single-board computers, and writing the logic that turns raw signal data into real-time decisions.</p>
+        <p>My projects span motion detection, velocity tracking, and cargo telemetry, each built around a sensor, a control system, and an alert mechanism. I've also applied that same approach to software, using signal processing and machine learning to classify biological waveform data.</p>
+        <p>Alongside my technical work, I've held leadership roles as a Safe School Ambassador and youth soccer coach, developing communication and team-management skills that carry over directly into project work.</p>
+      </div>
+      <ul class="fact-list">
+        <li><span class="tag">based</span> University of Waterloo, ON</li>
+        <li><span class="tag">studying</span> Bachelor of Applied Science, Computer Engineering</li>
+        <li><span class="tag">courses</span> Fundamentals of Programming (C++), Engineering Project Studio (ECE 198), Classical Mechanics, Linear Algebra, Calculus I</li>
+        <li><span class="tag">seeking</span> Winter 2027 co-op in embedded / hardware or comp eng roles</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="skills" style="background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">skills</div>
+      <h2>The toolkit</h2>
+      <p>What I reach for when a project needs to go from idea to working circuit.</p>
+    </div>
+    <div class="skill-groups">
+      <div class="skill-card">
+        <h4>Languages</h4>
+        <div class="chips"><span class="chip">C++</span><span class="chip">Python</span><span class="chip">Java</span></div>
+      </div>
+      <div class="skill-card">
+        <h4>Hardware &amp; Embedded</h4>
+        <div class="chips"><span class="chip">Raspberry Pi 5</span><span class="chip">I²C &amp; UART</span><span class="chip">MQTT</span><span class="chip">GPIO &amp; hardware interfacing</span><span class="chip">CLI</span></div>
+      </div>
+      <div class="skill-card">
+        <h4>Frameworks &amp; Libraries</h4>
+        <div class="chips"><span class="chip">OpenCV</span><span class="chip">libgpiod</span><span class="chip">Webhooks (ntfy.sh)</span><span class="chip">Scikit-learn</span></div>
+      </div>
+      <div class="skill-card">
+        <h4>Dev Tools</h4>
+        <div class="chips"><span class="chip">Git &amp; GitHub</span><span class="chip">VS Code</span><span class="chip">Raspberry Pi OS</span><span class="chip">picoCTF webshell</span><span class="chip">Windows RDP</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">projects</div>
+      <h2>Things I've wired up and shipped</h2>
+      <p>Each one starts with a sensor and ends with a decision — an LED, an alert, or a classification.</p>
+    </div>
+
+    <div class="proj-list">
+
+      <div class="proj-card" style="--proj-color:var(--red)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Raspberry Pi Embedded Motion &amp; Alert System</h3>
+            <span class="proj-status">● zero-lag trigger</span>
+          </div>
+          <p class="desc">A C++ pipeline that reads a PIR sensor over the libgpiod library on a Raspberry Pi 5, then pushes real-time alerts through an ntfy.sh webhook the moment motion is detected. Hardware control logic switches an LED on or off on every state transition, with no lag between sensor and signal.</p>
+          <div class="proj-stack"><span>C++</span><span>Raspberry Pi 5</span><span>libgpiod</span><span>ntfy.sh</span><span>Hardware interfacing</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--blue)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Real-Time Velocity &amp; Ultrasonic Motion Detector</h3>
+            <span class="proj-status">● &lt;15cm trigger radius</span>
+          </div>
+          <p class="desc">An object-tracking system built around an HC-SR04 ultrasonic sensor and Raspberry Pi 5. I designed a voltage divider circuit to safely step the echo signal down from 5V to 3.3V for the Pi's GPIO pins, then wrote the control logic to track pulse timing precisely and trigger a red LED whenever an object closes within 15cm.</p>
+          <div class="proj-stack"><span>C++</span><span>Raspberry Pi GPIO</span><span>HC-SR04</span><span>Sensor interfacing</span><span>Circuit design</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--purple)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Ciliafy — Biological Waveform Analysis Framework</h3>
+            <span class="proj-status">● 82% accuracy</span>
+          </div>
+          <p class="desc">An automated image-processing framework in Python and C++ that segments cilia centerlines and tracks motion across an 872-video dataset. I combined Fast Fourier Transform analysis of ciliary beat frequency with physics-based rod models for bending and curvature, then trained SVM, XGBoost, and CNN/RNN classifiers to detect patterns linked to Primary Ciliary Dyskinesia — reaching 82% detection accuracy.</p>
+          <div class="proj-stack"><span>Python</span><span>C++</span><span>OpenCV</span><span>FFT</span><span>SVM / XGBoost / CNN-RNN</span>
+</div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--yellow)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Environmental Cold-Chain &amp; Cargo Telemetry System</h3>
+            <span class="proj-status">● in progress</span>
+          </div>
+          <p class="desc">A cargo-monitoring system in development that tracks temperature, shock, and impact via BMP280 and MPU6050 sensors wired to an ESP32 over I²C. Sensor data streams to a Raspberry Pi over MQTT, feeding a C++ application that shows real-time updates, fires LED and buzzer alerts on threshold breaches, and timestamps every event.</p>
+          <div class="proj-stack"><span>C++</span><span>Raspberry Pi</span><span>ESP32</span><span>I²C</span><span>MQTT</span><span>BMP280 / MPU6050</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--red)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>RoboBot — Autonomous Obstacle-Avoidance Robot</h3>
+            <span class="proj-status">● self-directed</span>
+          </div>
+          <p class="desc">An independently built autonomous robot that navigated a playground environment and avoided obstacles in real time, using integrated distance sensors to guide smooth maneuvering. The project was recognized by my teacher for its efficient design and became my first hands-on introduction to combining hardware and software in a single working system.</p>
+          <div class="proj-stack"><span>Embedded programming</span><span>Distance sensors</span><span>Obstacle avoidance</span><span>Hardware/software integration</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--blue)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>AIDebateMate — OpenAI Open Model Hackathon</h3>
+            <span class="proj-status">● 2025</span>
+          </div>
+          <p class="desc">Built using the gpt-oss-20b model at the OpenAI hackathon, AIDebateMate generates structured, logical debate rounds with each AI participant following a distinct argumentative style. I led prompt engineering to keep responses grounded and on-topic, coordinated the team's roles, and merged everyone's work into a single GitHub repository for submission.</p>
+          <div class="proj-stack"><span>gpt-oss-20b</span><span>Prompt engineering</span><span>Team leadership</span><span>GitHub</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--purple)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Gait Analysis System — Early Parkinson's Detection</h3>
+            <span class="proj-status">● 80% accuracy · bronze award</span>
+          </div>
+          <p class="desc">A smartphone-based gait analysis system that applies machine learning to gait data to flag early Parkinson's symptoms, reaching 80% accuracy. Presented at the Waterloo Wellington Engineering Science Fair, where it received a bronze award in the engineering category.</p>
+          <div class="proj-stack"><span>Python</span><span>Machine learning</span><span>Signal processing</span><span>Gait analysis</span></div>
+        </div>
+      </div>
+
+      <div class="proj-card" style="--proj-color:var(--green)">
+        <div class="proj-led"></div>
+        <div>
+          <div class="proj-top">
+            <h3>Synapse — Adaptive Spaced-Repetition Study Engine</h3>
+            <span class="proj-status">● hackathon build</span>
+          </div>
+          <p class="desc">Built for the CUTC Transform Hackathon, Synapse turns pasted notes, PDFs, or images into flashcards automatically, then schedules review with the SM-2 spaced-repetition algorithm. An interactive teacher mode walks through material before quizzing, and real-time analytics chart targeted study against random review with Monte Carlo retention curves. Built with a teammate.</p>
+          <div class="proj-stack"><span>React</span><span>Vite</span><span>Tailwind CSS</span><span>Recharts</span><span>Gemini 2.0 Flash</span></div>
+          <a class="proj-link" href="https://github.com/AniketT0008/adaptive-study-engine" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="experience" style="background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">leadership &amp; experience</div>
+      <h2>Off the breadboard</h2>
+    </div>
+    <div class="exp-list">
+      <div class="exp-item">
+        <div class="period">2024 – 2025</div>
+        <div>
+          <h4>Safe School Ambassador</h4>
+          <ul>
+            <li>Spearheaded youth-led awareness campaigns, educational booths, and school-wide events, engaging over 100 students in an open, supportive school climate.</li>
+            <li>Collaborated with fellow ambassadors to guide peer discussions and drive ongoing outreach initiatives.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="period">Sept – Dec 2025</div>
+        <div>
+          <h4>Research Co-op — Pearl Sullivan IDEAs Clinic, University of Waterloo</h4>
+          <ul>
+            <li>Analyzing cilia deformation and its link to Primary Ciliary Dyskinesia (PCD) under Prof. Simarjeet Saini, Director of the Pearl Sullivan IDEAs Clinic, through the University Cooperative Education Program.</li>
+            <li>Built a pipeline to extract biomarkers — Ciliary Beat Frequency, amplitude, and regularity score — and am now training a machine learning model toward an early PCD screening algorithm.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="period">2026</div>
+        <div>
+          <h4>Youth Soccer Assistant Coach — Wilmot District Soccer Club</h4>
+          <ul>
+            <li>Coached U12 athletes through structured skill drills and tactical mini-games, improving passing, shooting, and spatial coordination.</li>
+            <li>Implemented a rotating captaincy system to build equitable leadership, guiding the team to a Silver Medal finish in the playoffs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="honors">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">honors &amp; certifications</div>
+      <h2>Recognition along the way</h2>
+    </div>
+    <div class="honors">
+      <div class="honor"><span class="spark">★</span> Best Project — Fair &amp; Engineering Division, Waterloo Wellington Science Fair</div>
+      <div class="honor"><span class="spark">★</span> Award of Merit, Waterloo Wellington Science Fair</div>
+      <div class="honor"><span class="spark">★</span> Finalist, Canada-Wide Science Fair</div>
+      <div class="honor"><span class="spark">★</span> Distinction for Math and Science</div>
+      <div class="honor"><span class="spark">★</span> Award of Excellence — highest grade in AP Calculus &amp; Vectors</div>
+      <div class="honor"><span class="spark">★</span> Laurier Cybersecurity Certificate</div>
+      <div class="honor"><span class="spark">★</span> Schulich Leader Nominee</div>
+      <div class="honor"><span class="spark">★</span> 2nd Place (2024) &amp; 3rd Place (2025), CTMC D8 Math Contest — Waterloo Catholic District School Board</div>
+      <div class="honor"><span class="spark">★</span> 11/13 challenges solved, picoCTF Cybersecurity Competition</div>
+    </div>
+  </div>
+</section>
+
+<section id="connect">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">let's connect</div>
+      <h2>Open to Winter 2027 co-op opportunities</h2>
+      <p>I'm looking for a co-op placement in embedded systems, hardware, or software engineering. I'd welcome the chance to talk about how I could contribute to your team.</p>
+    </div>
+    <div class="connect-row">
+      <a class="connect-btn" style="--icon-color:var(--green)" href="mailto:jeevanpartapsingh21@gmail.com">
+        <span class="icon-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg></span>
+        <span class="label"><span class="small">Email</span>jeevanpartapsingh21@gmail.com</span>
+      </a>
+      <a class="connect-btn" style="--icon-color:var(--blue)" href="tel:519-497-6366">
+        <span class="icon-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+        <span class="label"><span class="small">Phone</span>519-497-6366</span>
+      </a>
+      <a class="connect-btn" style="--icon-color:var(--purple)" href="https://github.com/jeevanpartapsingh21-a11y" target="_blank" rel="noopener">
+        <span class="icon-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>
+        <span class="label"><span class="small">GitHub</span>jeevanpartapsingh21-a11y</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-bottom">
+      <span>© 2026 Jeevan Partap Singh — Computer Engineering, University of Waterloo</span>
+      <span>Waterloo, ON</span>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>
